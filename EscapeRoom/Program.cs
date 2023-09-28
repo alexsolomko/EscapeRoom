@@ -7,8 +7,11 @@
         static char[,] room;
         static int playerX;
         static int playerY;
-
-
+        static int keyX;
+        static int keyY;
+        static int doorX;
+        static int doorY;
+        static bool hasKey = false;
 
         static void Main(string[] args)
         {
