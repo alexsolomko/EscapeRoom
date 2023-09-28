@@ -5,6 +5,10 @@
         static int roomWidth = 11;
         static int roomHeight = 11;
         static char[,] room;
+        static int playerX;
+        static int playerY;
+
+
 
         static void Main(string[] args)
         {
@@ -15,7 +19,7 @@
         static void InitializeRoom()
         {
             room = new char[roomWidth, roomHeight];
-
+        
             // Raumgrenzen festlegen
             for (int x = 0; x < roomWidth; x++)
             {
@@ -27,7 +31,7 @@
                 room[0, y] = '#'; // Linke Wand
                 room[roomWidth - 1, y] = '#'; // Rechte Wand
             }
-
+        
             // Boden
             for (int x = 1; x < roomWidth - 1; x++)
             {
@@ -51,7 +55,7 @@
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write('#');
                     }
-
+                    
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Blue;
