@@ -1,4 +1,5 @@
-﻿using static System.Console;
+﻿using System.Reflection.Metadata.Ecma335;
+using static System.Console;
 
 namespace EscapeRoom
 {
@@ -19,7 +20,16 @@ namespace EscapeRoom
         static void Main(string[] args)
         {
             InitializeRoom();
-            DisplayRoom();
+            while (true)
+            {
+                Clear();
+                DisplayRoom();
+                if (hasKey && playerX == doorX && playerY == doorY)
+                {
+                    WriteLine("Win");
+                    break;
+                }
+            }
         }
         #region InitializeRoom
         static void InitializeRoom()
@@ -141,7 +151,28 @@ namespace EscapeRoom
                     newX++;
                     break;
             }
-
+            if (IsValidMove (newX, newY))
+            {
+                room[playerX, playerY] = ' ';
+                playerX = newX;
+                playerY = newY;
+                room[playerX, playerY] = '@';
+                
+                if (playerX == keyX && playerY == keyY)
+                {
+                    hasKey = true;
+                    Beep();
+                }
+            }
+            else
+            {
+                Beep();
+            }
+        }
+        static bool IsValidMove(int x, int y)
+        {
+            char destination = room[x, y];
+            return destination != '#' && (destination != '+' || hasKey);
         }
 
     }
