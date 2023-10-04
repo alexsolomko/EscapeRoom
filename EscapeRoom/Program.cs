@@ -107,7 +107,7 @@ namespace EscapeRoom
                     }
                     else if (room[x, y] == '+')
                     {
-                        ForegroundColor = ConsoleColor.Magenta;
+                        ForegroundColor = ConsoleColor.Green;
                         WriteLine('+');
                     }
                     else
@@ -120,6 +120,29 @@ namespace EscapeRoom
             ResetColor();
         }
         #endregion
+
+        static void HandleInput(ConsoleKey key)
+        {
+            int newX = playerX;
+            int newY = playerY;
+
+            switch (key)
+            {
+                case ConsoleKey.UpArrow:
+                    newY--;
+                    break;
+                case ConsoleKey.DownArrow:
+                    newY++;
+                    break;
+                case ConsoleKey.LeftArrow:
+                    newX--;
+                    break;
+                case ConsoleKey.RightArrow:
+                    newX++;
+                    break;
+            }
+
+        }
 
     }
 }
