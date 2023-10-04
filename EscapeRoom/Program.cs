@@ -134,8 +134,16 @@ namespace EscapeRoom
                     }
                     else if (room[x, y] == '+')
                     {
-                        ForegroundColor = ConsoleColor.Green;
-                        Write('+');
+                        if (!hasKey)
+                        {
+                            ForegroundColor = ConsoleColor.Green;
+                            Write('+');
+                        }
+                        else
+                        {
+                            Write(' ');
+                        }
+
                     }
                     else
                     {
@@ -178,7 +186,7 @@ namespace EscapeRoom
                 if (playerX == keyX && playerY == keyY)
                 {
                     hasKey = true;
-                    Beep();
+                    BeepSound();                            // Spielsound für das gesammelte Schlüssel
                 }
             }
             else
