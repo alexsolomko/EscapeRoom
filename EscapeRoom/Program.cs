@@ -29,16 +29,16 @@ namespace EscapeRoom
             // Raumgrenzen festlegen
             for (int x = 0; x < roomWidth; x++)
             {
-                room[x, 0] = '#'; // Obere Wand
-                room[x, roomHeight - 1] = '#'; // Untere Wand
+                room[x, 0] = '#';                   // Obere Wand
+                room[x, roomHeight - 1] = '#';      // Untere Wand
             }
             for (int y = 0; y < roomHeight; y++)
             {
-                room[0, y] = '#'; // Linke Wand
-                room[roomWidth - 1, y] = '#'; // Rechte Wand
+                room[0, y] = '#';                   // Linke Wand
+                room[roomWidth - 1, y] = '#';       // Rechte Wand
             }
-        
-            // Boden
+
+            // Boden festlegen
             for (int x = 1; x < roomWidth - 1; x++)
             {
                 for (int y = 1; y < roomHeight - 1; y++)
@@ -57,8 +57,27 @@ namespace EscapeRoom
             keyY = rand.Next(1, roomHeight -1);
             room[keyX, keyY] = '$';
 
-
-
+            int doorSide = rand.Next(4);
+            switch (doorSide)
+            {
+                case 0: // Oben
+                    doorX = rand.Next(1, roomWidth - 1);
+                    doorY = 0;
+                    break;
+                case 1: // Unten
+                    doorX = rand.Next(1, roomWidth - 1);
+                    doorY = roomHeight - 1;
+                    break;
+                case 2: // Links
+                    doorY = rand.Next(1, roomHeight - 1);
+                    doorX = 0;
+                    break;
+                case 3: // Rechts
+                    doorY = rand.Next(1, roomHeight - 1);
+                    doorX = roomHeight - 1;
+                    break;
+            }
+            room[doorX, doorY] = '+';
         }
         #endregion
 
@@ -83,8 +102,13 @@ namespace EscapeRoom
                     }
                     else if (room[x, y] == '$')
                     {
-                        ForegroundColor= ConsoleColor.Red;
+                        ForegroundColor = ConsoleColor.Red;
                         WriteLine('$');
+                    }
+                    else if (room[x, y] == '+')
+                    {
+                        ForegroundColor = ConsoleColor.Magenta;
+                        WriteLine('+');
                     }
                     else
                     {
