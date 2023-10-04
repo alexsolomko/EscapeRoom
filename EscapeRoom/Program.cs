@@ -1,4 +1,6 @@
-﻿namespace EscapeRoom
+﻿using static System.Console;
+
+namespace EscapeRoom
 {
     internal class Program
     {
@@ -12,6 +14,7 @@
         static int doorX;
         static int doorY;
         static bool hasKey = false;
+        static Random rand = new Random();
 
         static void Main(string[] args)
         {
@@ -45,10 +48,16 @@
             }
 
             // Spieler platzieren
-            Random rand = new Random();
             playerX = rand.Next(1, roomWidth - 1);
             playerY = rand.Next(1, roomHeight - 1);
             room[playerX, playerY] = '@';
+
+            // Schlüssel platzieren
+            keyX = rand.Next(1, roomWidth -1);
+            keyY = rand.Next(1, roomHeight -1);
+            room[keyX, keyY] = '$';
+
+
 
         }
         #endregion
@@ -60,27 +69,31 @@
             {
                 for (int x = 0; x < roomWidth; x++)
                 {
-                    Console.SetCursorPosition(x, y);
+                    SetCursorPosition(x, y);
 
                     if (room[x, y] == '#')
                     {
-                        Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.Write('#');
+                        ForegroundColor = ConsoleColor.Blue;
+                        Write('#');
                     }
                     else if (room[x, y] == '@')
                     {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine('@');
+                        ForegroundColor = ConsoleColor.Yellow;
+                        WriteLine('@');
                     }
-
+                    else if (room[x, y] == '$')
+                    {
+                        ForegroundColor= ConsoleColor.Red;
+                        WriteLine('$');
+                    }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.Write(' ');
+                        ForegroundColor = ConsoleColor.Blue;
+                        Write(' ');
                     }
                 }
             }
-            Console.ResetColor();
+            ResetColor();
         }
         #endregion
 
