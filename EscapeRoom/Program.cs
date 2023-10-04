@@ -2,7 +2,7 @@
 {
     internal class Program
     {
-        static int roomWidth = 11;
+        static int roomWidth = 22;
         static int roomHeight = 11;
         static char[,] room;
         static int playerX;
@@ -18,7 +18,7 @@
             InitializeRoom();
             DisplayRoom();
         }
-
+        #region InitializeRoom
         static void InitializeRoom()
         {
             room = new char[roomWidth, roomHeight];
@@ -44,7 +44,9 @@
                 }
             }
         }
+        #endregion
 
+        #region DisplayRoom()
         static void DisplayRoom()
         {
             for (int y = 0; y < roomHeight; y++)
@@ -68,6 +70,7 @@
             }
             Console.ResetColor();
         }
+        #endregion
 
     }
 }
