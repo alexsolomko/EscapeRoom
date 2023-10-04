@@ -17,6 +17,12 @@ namespace EscapeRoom
         static bool hasKey = false;
         static Random rand = new Random();
 
+        // Soundeffekte
+        static void BeepSound()
+        {
+            Beep(1000, 200);        //1kHz  für 200 ms
+        }
+
         static void Main(string[] args)
         {
             InitializeRoom();
