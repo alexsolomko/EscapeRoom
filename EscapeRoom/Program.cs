@@ -69,12 +69,12 @@ namespace EscapeRoom
                     doorY = roomHeight - 1;
                     break;
                 case 2: // Links
-                    doorY = rand.Next(1, roomHeight - 1);
                     doorX = 0;
+                    doorY = rand.Next(1, roomHeight - 1);
                     break;
                 case 3: // Rechts
+                    doorX = roomWidth - 1;
                     doorY = rand.Next(1, roomHeight - 1);
-                    doorX = roomHeight - 1;
                     break;
             }
             room[doorX, doorY] = '+';
