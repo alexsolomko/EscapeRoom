@@ -18,10 +18,7 @@ namespace EscapeRoom
         static Random rand = new Random();
 
         // Soundeffekte
-        static void BeepSound()
-        {
-            Beep(1000, 200);        //1kHz  für 200 ms
-        }
+        static void BeepSound() => Beep(400, 500);        //400 Hz  für 200 ms
 
         static void Main(string[] args)
         {
@@ -191,7 +188,7 @@ namespace EscapeRoom
             }
             else
             {
-                Beep();
+                BeepSound();
             }
         }
         static bool IsValidMove(int x, int y)
