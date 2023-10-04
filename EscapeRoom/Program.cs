@@ -43,6 +43,13 @@
                     room[x, y] = ' ';
                 }
             }
+
+            // Spieler platzieren
+            Random rand = new Random();
+            playerX = rand.Next(1, roomWidth - 1);
+            playerY = rand.Next(1, roomHeight - 1);
+            room[playerX, playerY] = '@';
+
         }
         #endregion
 
@@ -60,7 +67,12 @@
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write('#');
                     }
-                    
+                    else if (room[x, y] == '@')
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine('@');
+                    }
+
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Blue;
