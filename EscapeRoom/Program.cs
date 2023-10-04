@@ -29,6 +29,9 @@ namespace EscapeRoom
                     WriteLine("Win");
                     break;
                 }
+
+                ConsoleKeyInfo keyInfo = ReadKey();
+                HandleInput(keyInfo.Key);
             }
         }
         #region InitializeRoom
