@@ -26,6 +26,7 @@ namespace EscapeRoom
                 DisplayRoom();
                 if (hasKey && playerX == doorX && playerY == doorY)
                 {
+                    Clear();
                     WriteLine("Win");
                     break;
                 }
@@ -111,17 +112,24 @@ namespace EscapeRoom
                     else if (room[x, y] == '@')
                     {
                         ForegroundColor = ConsoleColor.Yellow;
-                        WriteLine('@');
+                        Write('@');
                     }
                     else if (room[x, y] == '$')
                     {
-                        ForegroundColor = ConsoleColor.Red;
-                        WriteLine('$');
+                       if (!hasKey)
+                        {
+                            ForegroundColor = ConsoleColor.Red;
+                            Write('$');
+                        }
+                       else
+                        {
+                            Write(' ');
+                        }
                     }
                     else if (room[x, y] == '+')
                     {
                         ForegroundColor = ConsoleColor.Green;
-                        WriteLine('+');
+                        Write('+');
                     }
                     else
                     {
