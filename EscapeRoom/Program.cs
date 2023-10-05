@@ -5,17 +5,17 @@ namespace EscapeRoom
 {
     internal class Program
     {
-        const char Wall = '#';
-        const char Player = '@';
-        const char Key = '$';
-        const char Door = '+';
-        const char EmptySpace = '·';
+        const char Wall = '#'; // Wand
+        const char Player = '@'; // Spieler
+        const char Key = '$'; // Schlüssel
+        const char Door = '+'; // Tür
+        const char EmptySpace = '·'; // Leerfläche
 
         static string startLabel;
-        static string studioName = "by Honey Sky";
-        static string pressAnyKey = "(press any key to play)";
-        static int roomWidth;
-        static int roomHeight;
+        static string studioName = "von Honey Sky"; 
+        static string pressAnyKey = "(Drücken Sie eine beliebige Taste, um zu spielen)"; 
+        static int roomWidth; 
+        static int roomHeight; 
         static char[,] room;
         static int playerX;
         static int playerY;
@@ -23,16 +23,16 @@ namespace EscapeRoom
         static int keyY;
         static int doorX;
         static int doorY;
-        static bool hasKey = false;
+        static bool hasKey = false; 
         static Random rand = new Random();
 
         static void Main(string[] args)
         {
-            Console.SetWindowSize(70, 20);
-            Console.SetBufferSize(70, 20);
-            CursorVisible = false;
+            Console.SetWindowSize(70, 20); // Fenstergröße einstellen
+            Console.SetBufferSize(70, 20); // Puffergröße einstellen
+            CursorVisible = false; 
 
-            ShowStartLabel();
+            ShowStartLabel(); // Startet das Spiel mit einer Titelgrafik
 
             WriteLine("Willkommen!\n\n");
             WriteLine("Du bist die Spielfigur (@). Dein Ziel ist es, den Schlüssel ($) zu finden und die Tür (+) zu öffnen.");
@@ -41,11 +41,11 @@ namespace EscapeRoom
             ReadKey();
             Clear();
 
-            GetRoomDimensions();
+            GetRoomDimensions(); // Ruft die Methode auf, um die Raumabmessungen festzulegen
 
-            InitializeRoom();
+            InitializeRoom(); // Ruft die Methode auf, um den Raum zu initialisieren
 
-            PlayGame();
+            PlayGame(); // Ruft die Methode auf, um das Spiel zu starten
         }
 
         static void ShowStartLabel()
@@ -62,12 +62,12 @@ namespace EscapeRoom
                           |_|                                       
 ";
 
-            Title = "Escape Room by Honey Sky";
-            ForegroundColor = ConsoleColor.Yellow;
+            Title = "Escape Room von Honey Sky"; // Titel des Konsolenfensters
+            ForegroundColor = ConsoleColor.Yellow; // Textfarbe auf Gelb setzen
             Write(startLabel);
-            CenterText(studioName);
-            CenterText(pressAnyKey);
-            ResetColor();
+            CenterText(studioName); // Zentriert den Text "von Honey Sky"
+            CenterText(pressAnyKey); // Zentriert den Text "(Drücken Sie eine beliebige Taste, um zu spielen)"
+            ResetColor(); // Zurücksetzen der Textfarbe auf Standard
             ReadKey();
             Clear();
         }
@@ -80,11 +80,62 @@ namespace EscapeRoom
 
         static void GetRoomDimensions()
         {
-            Write("Geben Sie die Breite des Raums ein: ");
-            roomWidth = int.Parse(ReadLine());
+            WriteLine("Verwende die folgenden Schieberegler, um die Breite und Höhe des Raums auszuwählen:");
+            roomWidth = GetSliderValue("Breite", 10, 30); // Ruft die Methode auf, um die Breite auszuwählen
+            roomHeight = GetSliderValue("Höhe", 10, 20); // Ruft die Methode auf, um die Höhe auszuwählen
+        }
 
-            Write("Geben Sie die Höhe des Raums ein: ");
-            roomHeight = int.Parse(ReadLine());
+        static int GetSliderValue(string label, int minValue, int maxValue)
+        {
+            int optionVal = minValue; // Anfangswert der Option
+            int optionStep = 1; // Schrittweite der Option
+
+            while (true)
+            {
+                Clear();
+                WriteLine($"Verwende die Pfeiltasten, um die {label} des Raums auszuwählen:");
+                WriteLine(RenderSettingSlider(label, optionVal, minValue, maxValue)); // Ruft die Methode auf, um den Schieberegler anzuzeigen
+                ConsoleKeyInfo keyInfo = ReadKey();
+
+                if (keyInfo.Key == ConsoleKey.LeftArrow && optionVal > minValue)
+                {
+                    optionVal -= optionStep;
+                }
+                else if (keyInfo.Key == ConsoleKey.RightArrow && optionVal < maxValue)
+                {
+                    optionVal += optionStep;
+                }
+                else if (keyInfo.Key == ConsoleKey.Enter)
+                {
+                    return optionVal;
+                }
+            }
+        }
+
+        static string RenderSettingSlider(string label, int optionVal, int minValue, int maxValue)
+        {
+            string optionValStr = optionVal < 10 ? $"0{optionVal}" : $"{optionVal}"; // Fügt eine Null vor Zahlen kleiner als 10 hinzu
+            string sliderSec = "═"; // Slider-Abschnitt
+            string sliderStr = "";
+
+            sliderStr += "■"; // Setzt "Rahmen" am Anfang des Schiebereglers
+
+            // Schieberegler erstellen
+            for (int i = minValue; i <= maxValue; i++)
+            {
+                if (i == optionVal)
+                { // Fügt den Daumen zum Schieberegler hinzu
+                    sliderStr += $"╣{optionValStr}╠";
+                }
+                else
+                { // Füllt den Rest des Schiebereglers mit Slider-Abschnitten
+                    sliderStr += sliderSec;
+                }
+            }
+
+            sliderStr += "■"; // Setzt "Rahmen" am Ende des Schiebereglers
+
+            return $"{label}: {sliderStr}";
         }
 
         static void InitializeRoom()
@@ -146,7 +197,7 @@ namespace EscapeRoom
                 if (hasKey && playerX == doorX && playerY == doorY)
                 {
                     Clear();
-                    WriteLine("Gewonnen!");
+                    WriteLine("Gewonnen!"); // Gewonnen!
                     ReadKey();
                     break;
                 }
