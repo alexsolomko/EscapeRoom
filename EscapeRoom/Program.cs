@@ -5,20 +5,21 @@ namespace EscapeRoom
 {
     internal class Program
     {
-        static int roomWidth = 22;
-        static int roomHeight = 11;
-        static char[,] room;
-        static int playerX;
-        static int playerY;
-        static int keyX;
-        static int keyY;
-        static int doorX;
-        static int doorY;
-        static bool hasKey = false;
+        static int roomWidth = 22;              // Breite des Raums
+        static int roomHeight = 11;             // Höhe des Raums
+        static char[,] room;                    // Das Spielfeld
+        static int playerX;                     // X-Position der Spielfigur
+        static int playerY;                     // Y-Position der Spielfigur
+        static int keyX;                        // X-Position des Schlüssels
+        static int keyY;                        // Y-Position des Schlüssels
+        static int doorX;                       // X-Position der Tür
+        static int doorY;                       // Y-Position der Tür
+        static bool hasKey = false;             // Gibt an, ob die Spielfigur den Schlüssel hat
         static Random rand = new Random();
 
         // Soundeffekte
-        static void BeepSound() => Beep(400, 500);        //400 Hz  für 500 ms
+        static void BeepSound() => Beep(400, 500);        // Hz für ms
+        static void BeepSoundWall() => Beep(1000, 300);        // Hz für ms
 
         static void Main(string[] args)
         {
@@ -26,19 +27,29 @@ namespace EscapeRoom
             while (true)
             {
                 Clear();
+                CursorVisible = false;
                 DisplayRoom();
                 if (hasKey && playerX == doorX && playerY == doorY)
                 {
                     Clear();
                     WriteLine("Win");
+                    ReadKey();
                     break;
                 }
 
                 ConsoleKeyInfo keyInfo = ReadKey();
                 HandleInput(keyInfo.Key);
+
+                // Programmabbruch bei Escape Taste betätigung
+                if (keyInfo.Key == ConsoleKey.Escape)
+                {
+                    break;
+                }
+
+                
             }
         }
-        #region InitializeRoom
+        #region InitializeRoom()
         static void InitializeRoom()
         {
             room = new char[roomWidth, roomHeight];
@@ -53,15 +64,6 @@ namespace EscapeRoom
             {
                 room[0, y] = '#';                   // Linke Wand
                 room[roomWidth - 1, y] = '#';       // Rechte Wand
-            }
-
-            // Boden festlegen
-            for (int x = 1; x < roomWidth - 1; x++)
-            {
-                for (int y = 1; y < roomHeight - 1; y++)
-                {
-                    room[x, y] = ' ';
-                }
             }
 
             // Spieler platzieren
@@ -126,7 +128,7 @@ namespace EscapeRoom
                         }
                        else
                         {
-                            Write(' ');
+                            Write('·');
                         }
                     }
                     else if (room[x, y] == '+')
@@ -145,7 +147,7 @@ namespace EscapeRoom
                     else
                     {
                         ForegroundColor = ConsoleColor.Blue;
-                        Write(' ');
+                        Write('·');
                     }
                 }
             }
@@ -173,9 +175,10 @@ namespace EscapeRoom
                     newX++;
                     break;
             }
+
             if (IsValidMove (newX, newY))
             {
-                room[playerX, playerY] = ' ';
+                room[playerX, playerY] = '·';
                 playerX = newX;
                 playerY = newY;
                 room[playerX, playerY] = '@';
@@ -188,7 +191,7 @@ namespace EscapeRoom
             }
             else
             {
-                BeepSound();
+                BeepSoundWall();                           
             }
         }
         static bool IsValidMove(int x, int y)
