@@ -5,8 +5,9 @@ namespace EscapeRoom
 {
     internal class Program
     {
-        static int roomWidth;              // Breite des Raums
-        static int roomHeight;             // Höhe des Raums
+        static string startLabel;               // Start Label
+        static int roomWidth;                   // Breite des Raums
+        static int roomHeight;                  // Höhe des Raums
         static char[,] room;                    // Das Spielfeld
         static int playerX;                     // X-Position der Spielfigur
         static int playerY;                     // Y-Position der Spielfigur
@@ -23,19 +24,10 @@ namespace EscapeRoom
         #region Program start
         static void Main(string[] args)
         {
+            CursorVisible = false;
 
-
-
-            // Spiel start
-            while (true)
-            {
-
-                CursorVisible = false;
-
-                string titleText;
-                ForegroundColor = ConsoleColor.Yellow;
-
-                titleText = @"
+            #region Start Label
+            startLabel = @"
      ______                            _____                       
     |  ____|                          |  __ \                      
     | |__   ___  ___ __ _ _ __   ___  | |__) |___   ___  _ __ ___  
@@ -47,36 +39,41 @@ namespace EscapeRoom
     
                                                        
                       by Honey Sky                     
-                   (press any to play)   
+                 (press any key to play)   
 
 
 ";
-                Title = "Escape Room by Honey Sky";         // Label text
-                Write(titleText);
-                ResetColor();
-                ReadKey();
+            Title = "Escape Room by Honey Sky";         // Label text
+            ForegroundColor = ConsoleColor.Yellow;
+            Write(startLabel);
+            ResetColor();
+            ReadKey();
+            Clear();
+            #endregion Start Label
+
+            WriteLine("Willkommen zum Spiel!\n\n");
+            WriteLine("Du bist die Spielfigur (@). Dein Ziel ist es, den Schlüssel ($) zu finden und die Tür (+) zu öffnen.");
+            WriteLine("Bewege dich mit den Pfeiltasten. \nDrücke Enter, um das Spiel zu starten.");
+
+            ReadLine();
+            Clear();
+
+            // Raumgröße festlegen
+            Write("Geben Sie die Breite des Raums ein: ");
+            roomWidth = int.Parse(ReadLine());
+
+            Write("Geben Sie die Höhe des Raums ein: ");
+            roomHeight = int.Parse(ReadLine());
+
+
+            InitializeRoom();
+
+            // Spiel start
+            while (true)
+            {
+
                 Clear();
-
-
-                WriteLine("Willkommen zum Spiel!\n\n");
-                WriteLine("Du bist die Spielfigur (@). Dein Ziel ist es, den Schlüssel ($) zu finden und die Tür (+) zu öffnen.");
-                WriteLine("Bewege dich mit den Pfeiltasten. \nDrücke Enter, um das Spiel zu starten.");
-
-                ReadLine();
-                Clear();
-
-                // Raumgröße festlegen
-                Write("Geben Sie die Breite des Raums ein: ");
-                roomWidth = int.Parse(ReadLine());
-
-                Write("Geben Sie die Höhe des Raums ein: ");
-                roomHeight = int.Parse(ReadLine());
-
-
-                InitializeRoom();
-
-                Clear();
-                
+                CursorVisible = false;
                 DisplayRoom();
                 if (hasKey && playerX == doorX && playerY == doorY)
                 {
@@ -95,9 +92,10 @@ namespace EscapeRoom
                     break;
                 }
 
-
             }
+
         }
+
         #endregion
 
         #region InitializeRoom()
