@@ -5,8 +5,8 @@ namespace EscapeRoom
 {
     internal class Program
     {
-        static int roomWidth = 22;              // Breite des Raums
-        static int roomHeight = 11;             // Höhe des Raums
+        static int roomWidth;              // Breite des Raums
+        static int roomHeight;             // Höhe des Raums
         static char[,] room;                    // Das Spielfeld
         static int playerX;                     // X-Position der Spielfigur
         static int playerY;                     // Y-Position der Spielfigur
@@ -20,14 +20,63 @@ namespace EscapeRoom
         // Soundeffekte
         static void BeepSound() => Beep(400, 500);        // Hz für ms
         static void BeepSoundWall() => Beep(1000, 300);        // Hz für ms
-
+        #region Program start
         static void Main(string[] args)
         {
-            InitializeRoom();
+
+
+
+            // Spiel start
             while (true)
             {
-                Clear();
+
                 CursorVisible = false;
+
+                string titleText;
+                ForegroundColor = ConsoleColor.Yellow;
+
+                titleText = @"
+     ______                            _____                       
+    |  ____|                          |  __ \                      
+    | |__   ___  ___ __ _ _ __   ___  | |__) |___   ___  _ __ ___  
+    |  __| / __|/ __/ _` | '_ \ / _ \ |  _  // _ \ / _ \| '_ ` _ \ 
+    | |____\__ \ (_| (_| | |_) |  __/ | | \ \ (_) | (_) | | | | | |
+    |______|___/\___\__,_| .__/ \___| |_|  \_\___/ \___/|_| |_| |_|
+                         | |                                       
+                         |_|                                       
+    
+                                                       
+                      by Honey Sky                     
+                   (press any to play)   
+
+
+";
+                Title = "Escape Room by Honey Sky";         // Label text
+                Write(titleText);
+                ResetColor();
+                ReadKey();
+                Clear();
+
+
+                WriteLine("Willkommen zum Spiel!\n\n");
+                WriteLine("Du bist die Spielfigur (@). Dein Ziel ist es, den Schlüssel ($) zu finden und die Tür (+) zu öffnen.");
+                WriteLine("Bewege dich mit den Pfeiltasten. \nDrücke Enter, um das Spiel zu starten.");
+
+                ReadLine();
+                Clear();
+
+                // Raumgröße festlegen
+                Write("Geben Sie die Breite des Raums ein: ");
+                roomWidth = int.Parse(ReadLine());
+
+                Write("Geben Sie die Höhe des Raums ein: ");
+                roomHeight = int.Parse(ReadLine());
+
+
+                InitializeRoom();
+
+                Clear();
+                
                 DisplayRoom();
                 if (hasKey && playerX == doorX && playerY == doorY)
                 {
@@ -46,14 +95,16 @@ namespace EscapeRoom
                     break;
                 }
 
-                
+
             }
         }
+        #endregion
+
         #region InitializeRoom()
         static void InitializeRoom()
         {
             room = new char[roomWidth, roomHeight];
-        
+
             // Raumgrenzen festlegen
             for (int x = 0; x < roomWidth; x++)
             {
@@ -72,8 +123,8 @@ namespace EscapeRoom
             room[playerX, playerY] = '@';
 
             // Schlüssel platzieren
-            keyX = rand.Next(1, roomWidth -1);
-            keyY = rand.Next(1, roomHeight -1);
+            keyX = rand.Next(1, roomWidth - 1);
+            keyY = rand.Next(1, roomHeight - 1);
             room[keyX, keyY] = '$';
 
             int doorSide = rand.Next(4);
@@ -121,12 +172,12 @@ namespace EscapeRoom
                     }
                     else if (room[x, y] == '$')
                     {
-                       if (!hasKey)
+                        if (!hasKey)
                         {
                             ForegroundColor = ConsoleColor.Red;
                             Write('$');
                         }
-                       else
+                        else
                         {
                             Write('·');
                         }
@@ -155,6 +206,7 @@ namespace EscapeRoom
         }
         #endregion
 
+        #region Key controller
         static void HandleInput(ConsoleKey key)
         {
             int newX = playerX;
@@ -176,13 +228,13 @@ namespace EscapeRoom
                     break;
             }
 
-            if (IsValidMove (newX, newY))
+            if (IsValidMove(newX, newY))
             {
                 room[playerX, playerY] = '·';
                 playerX = newX;
                 playerY = newY;
                 room[playerX, playerY] = '@';
-                
+
                 if (playerX == keyX && playerY == keyY)
                 {
                     hasKey = true;
@@ -191,7 +243,7 @@ namespace EscapeRoom
             }
             else
             {
-                BeepSoundWall();                           
+                BeepSoundWall();
             }
         }
         static bool IsValidMove(int x, int y)
@@ -199,6 +251,6 @@ namespace EscapeRoom
             char destination = room[x, y];
             return destination != '#' && (destination != '+' || hasKey);
         }
-
+        #endregion
     }
 }
