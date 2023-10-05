@@ -6,6 +6,8 @@ namespace EscapeRoom
     internal class Program
     {
         static string startLabel;               // Start Label
+        static string studioName = "by Honey Sky";
+        static string pressAnyKey = "(press any key to play)";
         static int roomWidth;                   // Breite des Raums
         static int roomHeight;                  // Höhe des Raums
         static char[,] room;                    // Das Spielfeld
@@ -19,50 +21,54 @@ namespace EscapeRoom
         static Random rand = new Random();
 
         // Soundeffekte
-        static void BeepSound() => Beep(400, 500);        // Hz für ms
+        static void BeepSound() => Beep(400, 500);             // Hz für ms
         static void BeepSoundWall() => Beep(1000, 300);        // Hz für ms
         #region Program start
         static void Main(string[] args)
         {
+            Console.SetWindowSize(70, 20);
+            Console.SetBufferSize(70, 20);
+
             CursorVisible = false;
 
             #region Start Label
             startLabel = @"
-     ______                            _____                       
-    |  ____|                          |  __ \                      
-    | |__   ___  ___ __ _ _ __   ___  | |__) |___   ___  _ __ ___  
-    |  __| / __|/ __/ _` | '_ \ / _ \ |  _  // _ \ / _ \| '_ ` _ \ 
-    | |____\__ \ (_| (_| | |_) |  __/ | | \ \ (_) | (_) | | | | | |
-    |______|___/\___\__,_| .__/ \___| |_|  \_\___/ \___/|_| |_| |_|
-                         | |                                       
-                         |_|                                       
-    
-                                                       
-                      by Honey Sky                     
-                 (press any key to play)   
 
+     
+      ______                            _____                       
+     |  ____|                          |  __ \                      
+     | |__   ___  ___ __ _ _ __   ___  | |__) |___   ___  _ __ ___  
+     |  __| / __|/ __/ _` | '_ \ / _ \ |  _  // _ \ / _ \| '_ ` _ \ 
+     | |____\__ \ (_| (_| | |_) |  __/ | | \ \ (_) | (_) | | | | | |
+     |______|___/\___\__,_| .__/ \___| |_|  \_\___/ \___/|_| |_| |_|
+                          | |                                       
+                          |_|                                       
+     
 
 ";
+            
             Title = "Escape Room by Honey Sky";         // Label text
             ForegroundColor = ConsoleColor.Yellow;
             Write(startLabel);
+            centerText(studioName);                     //Zentrirte Text
+            centerText(pressAnyKey);                    //Zentrierte Text
             ResetColor();
             ReadKey();
             Clear();
             #endregion Start Label
 
-            WriteLine("Willkommen zum Spiel!\n\n");
+            WriteLine("Willkommen!\n\n");
             WriteLine("Du bist die Spielfigur (@). Dein Ziel ist es, den Schlüssel ($) zu finden und die Tür (+) zu öffnen.");
             WriteLine("Bewege dich mit den Pfeiltasten. \nDrücke Enter, um das Spiel zu starten.");
 
-            ReadLine();
+            ReadKey();
             Clear();
 
             // Raumgröße festlegen
-            Write("Geben Sie die Breite des Raums ein: ");
+            Write("Geben Sie die Breite des Raums ein: ");      // Breite x
             roomWidth = int.Parse(ReadLine());
 
-            Write("Geben Sie die Höhe des Raums ein: ");
+            Write("Geben Sie die Höhe des Raums ein: ");        // Höhe y
             roomHeight = int.Parse(ReadLine());
 
 
@@ -71,7 +77,6 @@ namespace EscapeRoom
             // Spiel start
             while (true)
             {
-
                 Clear();
                 CursorVisible = false;
                 DisplayRoom();
@@ -97,6 +102,12 @@ namespace EscapeRoom
         }
 
         #endregion
+
+        static void centerText(String text)
+        {
+            Console.Write(new string(' ', (Console.WindowWidth - text.Length) / 2));
+            Console.WriteLine(text);
+        }
 
         #region InitializeRoom()
         static void InitializeRoom()
