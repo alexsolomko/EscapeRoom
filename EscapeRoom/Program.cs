@@ -18,7 +18,7 @@ namespace EscapeRoom
         static Random rand = new Random();
 
         // Soundeffekte
-        static void BeepSound() => Beep(400, 500);        //400 Hz  für 200 ms
+        static void BeepSound() => Beep(400, 500);        //400 Hz  für 500 ms
 
         static void Main(string[] args)
         {
