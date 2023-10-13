@@ -1,21 +1,35 @@
 ﻿using System;
-using static System.Console;
+using System.Reflection;
 
 namespace EscapeRoom
 {
     internal class Program
     {
-        const char Wall = '#'; // Wand
-        const char Player = '@'; // Spieler
-        const char Key = '$'; // Schlüssel
-        const char Door = '+'; // Tür
-        const char EmptySpace = '·'; // Leerfläche
+        const char Wall = '#';         // Wand Teil
+        const char Player = 'P';       // Spieler
+        const char Key = 'K';          // Schlüssel
+        const char Door = 'D';         // Tür
+        const char EmptySpace = '·';   // Leerfläche Teil
+        const int sizeWidth = 70;      // Window/Buffer Width
+        const int sizeHeight = 20;     // Window/Buffer Height
 
-        static string startLabel;
-        static string studioName = "von Honey Sky"; 
-        static string pressAnyKey = "(Drücken Sie eine beliebige Taste, um zu spielen)"; 
-        static int roomWidth; 
-        static int roomHeight; 
+        static string labelName = "Escape Room von Honey Sky"; // Titel des Konsolenfensters
+        static string startLabel = @"
+     ______                            _____                       
+    |  ____|                          |  __ \                      
+    | |__   ___  ___ __ _ _ __   ___  | |__) |___   ___  _ __ ___  
+    |  __| / __|/ __/ _` | '_ \ / _ \ |  _  // _ \ / _ \| '_ ` _ \ 
+    | |____\__ \ (_| (_| | |_) |  __/ | | \ \ (_) | (_) | | | | | |
+    |______|___/\___\__,_| .__/ \___| |_|  \_\___/ \___/|_| |_| |_|
+                         | |                                       
+                         |_|              
+
+";
+        static string studioName = "von Honey Sky";
+        static string pressAnyKey = "(Drücken Sie eine beliebige Taste, um zu spielen)";
+
+        static int roomWidth;
+        static int roomHeight;
         static char[,] room;
         static int playerX;
         static int playerY;
@@ -23,85 +37,77 @@ namespace EscapeRoom
         static int keyY;
         static int doorX;
         static int doorY;
-        static bool hasKey = false; 
-        static Random rand = new Random();
+        static bool hasKey = false;
+        static Random rand = new Random(); // Gott des Zufalls
 
         static void Main(string[] args)
         {
-            Console.SetWindowSize(70, 20); // Fenstergröße einstellen
-            Console.SetBufferSize(70, 20); // Puffergröße einstellen
-            CursorVisible = false; 
-
-            ShowStartLabel(); // Startet das Spiel mit einer Titelgrafik
-
-            WriteLine("Willkommen!\n\n");
-            WriteLine("Du bist die Spielfigur (@). Dein Ziel ist es, den Schlüssel ($) zu finden und die Tür (+) zu öffnen.");
-            WriteLine("Bewege dich mit den Pfeiltasten. \nDrücke Enter, um das Spiel zu starten.");
-
-            ReadKey();
-            Clear();
-
+            WindowProperties();         //Window/Buffer Eigenschaften
+            ShowStartLabel();           //Titelgrafik
+            HelloText();                //Hello Text
             GetRoomDimensions(); // Ruft die Methode auf, um die Raumabmessungen festzulegen
-
             InitializeRoom(); // Ruft die Methode auf, um den Raum zu initialisieren
-
             PlayGame(); // Ruft die Methode auf, um das Spiel zu starten
         }
+        static void WindowProperties()
+        {
+            Console.WindowWidth = sizeWidth;
+            Console.WindowHeight = sizeHeight;
 
+            Console.BufferWidth = sizeWidth;
+            Console.BufferHeight = sizeHeight;
+
+            Console.CursorVisible = false;
+        }
         static void ShowStartLabel()
         {
-            startLabel = @"
-     
-      ______                            _____                       
-     |  ____|                          |  __ \                      
-     | |__   ___  ___ __ _ _ __   ___  | |__) |___   ___  _ __ ___  
-     |  __| / __|/ __/ _` | '_ \ / _ \ |  _  // _ \ / _ \| '_ ` _ \ 
-     | |____\__ \ (_| (_| | |_) |  __/ | | \ \ (_) | (_) | | | | | |
-     |______|___/\___\__,_| .__/ \___| |_|  \_\___/ \___/|_| |_| |_|
-                          | |                                       
-                          |_|                                       
-";
-
-            Title = "Escape Room von Honey Sky"; // Titel des Konsolenfensters
-            ForegroundColor = ConsoleColor.Yellow; // Textfarbe auf Gelb setzen
-            Write(startLabel);
+            Console.Title = labelName; // Titel des Konsolenfensters
+            Console.ForegroundColor = ConsoleColor.Yellow; // Textfarbe auf Gelb setzen
+            Console.Write(startLabel);
             CenterText(studioName); // Zentriert den Text "von Honey Sky"
+            Console.Write("\n\n\n\n\n");
             CenterText(pressAnyKey); // Zentriert den Text "(Drücken Sie eine beliebige Taste, um zu spielen)"
-            ResetColor(); // Zurücksetzen der Textfarbe auf Standard
-            ReadKey();
-            Clear();
+            Console.ResetColor(); // Zurücksetzen der Textfarbe auf Standard
+            Console.ReadKey();
+            Console.Clear();
         }
-
-        static void CenterText(string text)
+        static void HelloText()
         {
-            Console.Write(new string(' ', (Console.WindowWidth - text.Length) / 2));
-            Console.WriteLine(text);
-        }
+            Console.WriteLine("\n\n\n");
+            CenterText("Willkommen!\n\n");
+            Console.WriteLine($"           Du bist die Spielfigur ({Player})");
+            Console.WriteLine($"           Dein Ziel ist es, den Schlüssel ({Key}) zu finden ");
+            Console.WriteLine($"           und die Tür ({ Door}) zu öffnen");
+            Console.WriteLine($"           Bewege dich mit den Pfeiltasten");
+            Console.WriteLine("\n\n");
+            Console.WriteLine($"           Drücke eine beliebige Taste, um das Spiel zu starten.");
 
+            Console.ReadKey();
+            Console.Clear();
+        }
         static void GetRoomDimensions()
         {
-            WriteLine("Verwende die folgenden Schieberegler, um die Breite und Höhe des Raums auszuwählen:");
-            roomWidth = GetSliderValue("Breite", 10, 30); // Ruft die Methode auf, um die Breite auszuwählen
+            Console.WriteLine("Verwende die folgenden Schieberegler, um die Breite und Höhe des Raums auszuwählen:");
+            roomWidth = GetSliderValue("Breite", 10, 40); // Ruft die Methode auf, um die Breite auszuwählen
             roomHeight = GetSliderValue("Höhe", 10, 20); // Ruft die Methode auf, um die Höhe auszuwählen
         }
-
-        static int GetSliderValue(string label, int minValue, int maxValue)
+        static int GetSliderValue(string _label, int _minValue, int _maxValue)
         {
-            int optionVal = minValue; // Anfangswert der Option
+            int optionVal = _minValue; // Anfangswert der Option
             int optionStep = 1; // Schrittweite der Option
 
             while (true)
             {
-                Clear();
-                WriteLine($"Verwende die Pfeiltasten, um die {label} des Raums auszuwählen:");
-                WriteLine(RenderSettingSlider(label, optionVal, minValue, maxValue)); // Ruft die Methode auf, um den Schieberegler anzuzeigen
-                ConsoleKeyInfo keyInfo = ReadKey();
+                Console.Clear();
+                Console.WriteLine($"Verwende die Pfeiltasten, um die {_label} des Raums auszuwählen:");
+                Console.WriteLine(RenderSettingSlider(_label, optionVal, _minValue, _maxValue)); // Ruft die Methode auf, um den Schieberegler anzuzeigen
+                ConsoleKeyInfo keyInfo = Console.ReadKey();
 
-                if (keyInfo.Key == ConsoleKey.LeftArrow && optionVal > minValue)
+                if (keyInfo.Key == ConsoleKey.LeftArrow && optionVal > _minValue)
                 {
                     optionVal -= optionStep;
                 }
-                else if (keyInfo.Key == ConsoleKey.RightArrow && optionVal < maxValue)
+                else if (keyInfo.Key == ConsoleKey.RightArrow && optionVal < _maxValue)
                 {
                     optionVal += optionStep;
                 }
@@ -111,19 +117,18 @@ namespace EscapeRoom
                 }
             }
         }
-
-        static string RenderSettingSlider(string label, int optionVal, int minValue, int maxValue)
+        static string RenderSettingSlider(string _label, int _optionVal, int _minValue, int _maxValue)
         {
-            string optionValStr = optionVal < 10 ? $"0{optionVal}" : $"{optionVal}"; // Fügt eine Null vor Zahlen kleiner als 10 hinzu
+            string optionValStr = _optionVal < 10 ? $"0{_optionVal}" : $"{_optionVal}"; // Fügt eine Null vor Zahlen kleiner als 10 hinzu
             string sliderSec = "═"; // Slider-Abschnitt
             string sliderStr = "";
 
             sliderStr += "■"; // Setzt "Rahmen" am Anfang des Schiebereglers
 
             // Schieberegler erstellen
-            for (int i = minValue; i <= maxValue; i++)
+            for (int i = _minValue; i <= _maxValue; i++)
             {
-                if (i == optionVal)
+                if (i == _optionVal)
                 { // Fügt den Daumen zum Schieberegler hinzu
                     sliderStr += $"╣{optionValStr}╠";
                 }
@@ -135,9 +140,8 @@ namespace EscapeRoom
 
             sliderStr += "■"; // Setzt "Rahmen" am Ende des Schiebereglers
 
-            return $"{label}: {sliderStr}";
+            return $"{_label}: {sliderStr}";
         }
-
         static void InitializeRoom()
         {
             room = new char[roomWidth, roomHeight];
@@ -186,23 +190,22 @@ namespace EscapeRoom
             }
             room[doorX, doorY] = Door;
         }
-
         static void PlayGame()
         {
             while (true)
             {
-                Clear();
-                CursorVisible = false;
+                Console.Clear();
+                Console.CursorVisible = false;
                 DisplayRoom();
                 if (hasKey && playerX == doorX && playerY == doorY)
                 {
-                    Clear();
-                    WriteLine("Gewonnen!"); // Gewonnen!
-                    ReadKey();
+                    Console.Clear();
+                    Console.WriteLine("Gewonnen!"); // Gewonnen!
+                    Console.ReadKey();
                     break;
                 }
 
-                ConsoleKeyInfo keyInfo = ReadKey();
+                ConsoleKeyInfo keyInfo = Console.ReadKey();
                 HandleInput(keyInfo.Key);
 
                 if (keyInfo.Key == ConsoleKey.Escape)
@@ -211,65 +214,63 @@ namespace EscapeRoom
                 }
             }
         }
-
         static void DisplayRoom()
         {
             for (int y = 0; y < roomHeight; y++)
             {
                 for (int x = 0; x < roomWidth; x++)
                 {
-                    SetCursorPosition(x, y);
+                    Console.SetCursorPosition(x, y);
 
                     if (room[x, y] == Wall)
                     {
-                        ForegroundColor = ConsoleColor.Blue;
-                        Write(Wall);
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.Write(Wall);
                     }
                     else if (room[x, y] == Player)
                     {
-                        ForegroundColor = ConsoleColor.Yellow;
-                        Write(Player);
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write(Player);
                     }
                     else if (room[x, y] == Key)
                     {
                         if (!hasKey)
                         {
-                            ForegroundColor = ConsoleColor.Red;
-                            Write(Key);
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write(Key);
                         }
                         else
                         {
-                            Write(EmptySpace);
+                            Console.Write(EmptySpace);
                         }
                     }
                     else if (room[x, y] == Door)
                     {
                         if (!hasKey)
                         {
-                            ForegroundColor = ConsoleColor.Green;
-                            Write(Door);
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write(Door);
                         }
                         else
                         {
-                            Write(EmptySpace);
+                            Console.Write(EmptySpace);
                         }
                     }
                     else
                     {
-                        ForegroundColor = ConsoleColor.Blue;
-                        Write(EmptySpace);
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.Write(EmptySpace);
                     }
                 }
             }
-            ResetColor();
+            Console.ResetColor();
         }
-
-        static void HandleInput(ConsoleKey key)
+        static void HandleInput(ConsoleKey _key)
         {
             int newX = playerX;
             int newY = playerY;
 
-            switch (key)
+            switch (_key)
             {
                 case ConsoleKey.UpArrow:
                     newY--;
@@ -303,14 +304,17 @@ namespace EscapeRoom
                 BeepSoundWall();
             }
         }
-
-        static bool IsValidMove(int x, int y)
+        static bool IsValidMove(int _x, int _y)
         {
-            char destination = room[x, y];
+            char destination = room[_x, _y];
             return destination != Wall && (destination != Door || hasKey);
         }
-
-        static void BeepSound() => Beep(400, 500);
-        static void BeepSoundWall() => Beep(1000, 300);
+        static void CenterText(string _text)     // Zentriert den Text
+        {
+            Console.Write(new string(' ', (Console.WindowWidth - _text.Length) / 2));
+            Console.WriteLine(_text);
+        }
+        static void BeepSound() => Console.Beep(400, 500);
+        static void BeepSoundWall() => Console.Beep(1000, 300);
     }
 }
