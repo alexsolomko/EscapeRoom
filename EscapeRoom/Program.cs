@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace EscapeRoom
 {
@@ -29,6 +30,24 @@ namespace EscapeRoom
         static string pressAnyKey = "Drücke eine beliebige Taste, um das Spiel zu starten";
         static string welcome = "Willkommen!\n\n";
         static string enterText = $"           Du bist die Spielfigur ({Player})" + '\n' + $"           Dein Ziel ist es, den Schlüssel ({Key}) zu finden" + '\n' + $"           und die Tür ({Door}) zu öffnen" + '\n' + $"           Bewege dich mit den Pfeiltasten";
+        static string sliderRegelAnfang = $"Verwende die Pfeiltasten, um die ";
+        static string sliderRegelEnde = $" des Raums auszuwählen:";
+        static string enterKey = "Drücken Sie zur Bestätigung die Eingabetaste";
+        static string win = @"
+
+
+
+
+
+                    __          __  _           _ 
+                    \ \        / / (_)         | |
+                     \ \  /\  / /   _   _ __   | |
+                      \ \/  \/ /   | | | '_ \  | |
+                       \  /\  /    | | | | | | |_|
+                        \/  \/     |_| |_| |_| (_)
+                                                  
+                                                  
+";
 
         static int roomWidth;
         static int roomHeight;
@@ -44,9 +63,9 @@ namespace EscapeRoom
 
         static void Main(string[] args)
         {
-            WindowProperties();         //Window/Buffer Eigenschaften
-            ShowStartLabel();           //Titelgrafik
-            HelloText();                //Hello Text
+            WindowProperties();         // Window/Buffer Eigenschaften
+            ShowStartLabel();           // Titelgrafik
+            HelloText();                // Hello Text
             GetRoomDimensions();        // Ruft die Methode auf, um die Raumabmessungen festzulegen
             InitializeRoom();           // Ruft die Methode auf, um den Raum zu initialisieren
             PlayGame();                 // Ruft die Methode auf, um das Spiel zu starten
@@ -63,13 +82,16 @@ namespace EscapeRoom
         }
         static void ShowStartLabel()
         {
-            Console.Title = labelName; // Titel des Konsolenfensters
-            Console.ForegroundColor = ConsoleColor.Yellow; // Textfarbe auf Gelb setzen
+            Console.Title = labelName;                      // Titel des Konsolenfensters
+            Console.ForegroundColor = ConsoleColor.Yellow;  // Textfarbe auf Gelb setzen
             Console.Write(startLabel);
-            CenterText(studioName); // Zentriert den Text "von Honey Sky"
+            Console.ForegroundColor= ConsoleColor.White;
+            CenterText(studioName);                         // Zentriert den Text "von Honey Sky"
+            Console.ResetColor();
             Console.Write("\n\n\n\n\n");
-            CenterText(pressAnyKey); // Zentriert den Text "(Drücken Sie eine beliebige Taste, um zu spielen)"
-            Console.ResetColor(); // Zurücksetzen der Textfarbe auf Standard
+            Console.ForegroundColor = ConsoleColor.Green;
+            CenterText(pressAnyKey);                        // Zentriert den Text "(Drücken Sie eine beliebige Taste, um zu spielen)"
+            Console.ResetColor();                           // Zurücksetzen der Textfarbe auf Standard
             Console.ReadKey();
             Console.Clear();
         }
@@ -96,10 +118,12 @@ namespace EscapeRoom
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("\n\n\n\n");
-                CenterText($"Verwende die Pfeiltasten, um die {_label} des Raums auszuwählen:");
+                Console.WriteLine("\n\n\n\n\n");
+                CenterText(sliderRegelAnfang + $"{_label}"  + sliderRegelEnde);          //$"Verwende die Pfeiltasten, um die {_label} des Raums auszuwählen:"
                 Console.WriteLine('\n');
                 CenterText(RenderSettingSlider(optionVal, _minValue, _maxValue));        // Ruft die Methode auf, um den Schieberegler anzuzeigen
+                Console.WriteLine('\n');
+                CenterText(enterKey);
                 ConsoleKeyInfo keyInfo = Console.ReadKey();
 
                 if (keyInfo.Key == ConsoleKey.LeftArrow && optionVal > _minValue)
@@ -118,18 +142,27 @@ namespace EscapeRoom
         }
         static string RenderSettingSlider(int _optionVal, int _minValue, int _maxValue)
         {
-            string optionValStr = _optionVal < 10 ? $"0{_optionVal}" : $"{_optionVal}"; // Fügt eine Null vor Zahlen kleiner als 10 hinzu
+            string optionValStr; // Fügt eine Null vor Zahlen kleiner als 10 hinzu
+            if (_optionVal < 10)
+            {
+                optionValStr = $"0{_optionVal}";
+            }
+            else
+            {
+                optionValStr = $"{_optionVal}";
+            }
+
             string sliderSec = "═"; // Slider-Abschnitt
             string sliderStr = "";
-
+            
             sliderStr += "■"; // Setzt "Rahmen" am Anfang des Schiebereglers
 
             // Schieberegler erstellen
             for (int i = _minValue; i <= _maxValue; i++)
             {
                 if (i == _optionVal)
-                { // Fügt den Daumen zum Schieberegler hinzu
-                    sliderStr += $"╣{optionValStr}╠";
+                { 
+                    sliderStr += $"╣{optionValStr}╠";       // Fügt den Daumen zum Schieberegler hinzu
                 }
                 else
                 { // Füllt den Rest des Schiebereglers mit Slider-Abschnitten
@@ -199,8 +232,11 @@ namespace EscapeRoom
                 if (hasKey && playerX == doorX && playerY == doorY)
                 {
                     Console.Clear();
-                    Console.WriteLine("Gewonnen!"); // Gewonnen!
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine(win);
                     Console.ReadKey();
+                    Console.ResetColor();
+                    Console.Clear();
                     break;
                 }
 
@@ -209,6 +245,7 @@ namespace EscapeRoom
 
                 if (keyInfo.Key == ConsoleKey.Escape)
                 {
+                    Console.Clear();
                     break;
                 }
             }
@@ -308,7 +345,7 @@ namespace EscapeRoom
             char destination = room[_x, _y];
             return destination != Wall && (destination != Door || hasKey);
         }
-        static void CenterText(string _text)     // Zentriert den Text
+        static void CenterText(string _text)
         {
             Console.Write(new string(' ', (Console.WindowWidth - _text.Length) / 2));
             Console.WriteLine(_text);
