@@ -26,7 +26,9 @@ namespace EscapeRoom
 
 ";
         static string studioName = "von Honey Sky";
-        static string pressAnyKey = "(Drücken Sie eine beliebige Taste, um zu spielen)";
+        static string pressAnyKey = "Drücke eine beliebige Taste, um das Spiel zu starten";
+        static string welcome = "Willkommen!\n\n";
+        static string enterText = $"           Du bist die Spielfigur ({Player})" + '\n' + $"           Dein Ziel ist es, den Schlüssel ({Key}) zu finden" + '\n' + $"           und die Tür ({Door}) zu öffnen" + '\n' + $"           Bewege dich mit den Pfeiltasten";
 
         static int roomWidth;
         static int roomHeight;
@@ -45,9 +47,9 @@ namespace EscapeRoom
             WindowProperties();         //Window/Buffer Eigenschaften
             ShowStartLabel();           //Titelgrafik
             HelloText();                //Hello Text
-            GetRoomDimensions(); // Ruft die Methode auf, um die Raumabmessungen festzulegen
-            InitializeRoom(); // Ruft die Methode auf, um den Raum zu initialisieren
-            PlayGame(); // Ruft die Methode auf, um das Spiel zu starten
+            GetRoomDimensions();        // Ruft die Methode auf, um die Raumabmessungen festzulegen
+            InitializeRoom();           // Ruft die Methode auf, um den Raum zu initialisieren
+            PlayGame();                 // Ruft die Methode auf, um das Spiel zu starten
         }
         static void WindowProperties()
         {
@@ -74,20 +76,15 @@ namespace EscapeRoom
         static void HelloText()
         {
             Console.WriteLine("\n\n\n");
-            CenterText("Willkommen!\n\n");
-            Console.WriteLine($"           Du bist die Spielfigur ({Player})");
-            Console.WriteLine($"           Dein Ziel ist es, den Schlüssel ({Key}) zu finden ");
-            Console.WriteLine($"           und die Tür ({ Door}) zu öffnen");
-            Console.WriteLine($"           Bewege dich mit den Pfeiltasten");
+            CenterText(welcome);
+            Console.WriteLine(enterText);
             Console.WriteLine("\n\n");
-            Console.WriteLine($"           Drücke eine beliebige Taste, um das Spiel zu starten.");
-
+            CenterText(pressAnyKey);
             Console.ReadKey();
             Console.Clear();
         }
         static void GetRoomDimensions()
         {
-            Console.WriteLine("Verwende die folgenden Schieberegler, um die Breite und Höhe des Raums auszuwählen:");
             roomWidth = GetSliderValue("Breite", 10, 40); // Ruft die Methode auf, um die Breite auszuwählen
             roomHeight = GetSliderValue("Höhe", 10, 20); // Ruft die Methode auf, um die Höhe auszuwählen
         }
@@ -99,8 +96,10 @@ namespace EscapeRoom
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine($"Verwende die Pfeiltasten, um die {_label} des Raums auszuwählen:");
-                Console.WriteLine(RenderSettingSlider(_label, optionVal, _minValue, _maxValue)); // Ruft die Methode auf, um den Schieberegler anzuzeigen
+                Console.WriteLine("\n\n\n\n");
+                CenterText($"Verwende die Pfeiltasten, um die {_label} des Raums auszuwählen:");
+                Console.WriteLine('\n');
+                CenterText(RenderSettingSlider(optionVal, _minValue, _maxValue));        // Ruft die Methode auf, um den Schieberegler anzuzeigen
                 ConsoleKeyInfo keyInfo = Console.ReadKey();
 
                 if (keyInfo.Key == ConsoleKey.LeftArrow && optionVal > _minValue)
@@ -117,7 +116,7 @@ namespace EscapeRoom
                 }
             }
         }
-        static string RenderSettingSlider(string _label, int _optionVal, int _minValue, int _maxValue)
+        static string RenderSettingSlider(int _optionVal, int _minValue, int _maxValue)
         {
             string optionValStr = _optionVal < 10 ? $"0{_optionVal}" : $"{_optionVal}"; // Fügt eine Null vor Zahlen kleiner als 10 hinzu
             string sliderSec = "═"; // Slider-Abschnitt
@@ -140,7 +139,7 @@ namespace EscapeRoom
 
             sliderStr += "■"; // Setzt "Rahmen" am Ende des Schiebereglers
 
-            return $"{_label}: {sliderStr}";
+            return sliderStr;
         }
         static void InitializeRoom()
         {
