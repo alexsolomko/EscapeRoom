@@ -40,14 +40,21 @@ namespace EscapeRoom
         static string studioName = "von Honey Sky";
         static string pressAnyKey = "Drücke eine beliebige Taste, um das Spiel zu starten";
         static string welcome = "Willkommen!\n\n";
+
         static string leerFeld = "           ";
-        static string gameInstructions = $"{leerFeld}Du bist die Spielfigur ({player})\n" +
-                                         $"{leerFeld}Dein Ziel ist es, den Schlüssel ({key}) zu finden\n" +
-                                         $"{leerFeld}und die Tür ({door}) zu öffnen\n" +
+        //ANSI colors (16)
+        static string colorRed = "\u001b[31;1m";
+        static string colorYellow = "\u001b[33;1m";
+        static string colorGreen = "\u001b[32;1m";
+        static string colorReset = "\u001b[0m";
+
+        static string gameInstructions = $"{leerFeld}Du bist die Spielfigur ({colorYellow}{player}{colorReset})\n" +
+                                         $"{leerFeld}Dein Ziel ist es, den Schlüssel ({colorRed}{key}{colorReset}) zu finden\n" +
+                                         $"{leerFeld}und die Tür ({colorGreen}{door}{colorReset}) zu öffnen\n" +
                                          $"{leerFeld}Bewege dich mit den Pfeiltasten";
         static string sliderRegelAnfang = $"Verwende die Pfeiltasten, um die ";
         static string sliderRegelEnde = $" des Raums auszuwählen:";
-        static string enterKey = "Drücken Sie zur Bestätigung die Eingabetaste";
+        static string enterKey = $"Drücken Sie zur Bestätigung die Eingabetaste";
         static string win = @"
 
 
@@ -76,6 +83,9 @@ namespace EscapeRoom
         static bool hasKey = false;
         static Random rand = new Random(); // Gott des Zufalls
 
+        static int numberOfFlashes = 3;
+        static int flashDelay = 400;
+
         static void Main(string[] args)
         {
             WindowProperties();         // Window/Buffer Eigenschaften
@@ -98,12 +108,20 @@ namespace EscapeRoom
         static void ShowStartLabel()
         {
             Console.Title = labelName;                      // Titel des Konsolenfensters
-            Console.ForegroundColor = colors[3];  // Textfarbe auf Gelb setzen
-            Console.Write(startLabel);
+
+            for (int i = 0; i < numberOfFlashes; i++)
+            {
+                Console.Clear();
+                Thread.Sleep(flashDelay);
+                Console.ForegroundColor = colors[3];
+                Console.WriteLine(startLabel);
+                Thread.Sleep(flashDelay);
+            }
             Console.ForegroundColor = colors[4];
             CenterText(studioName);                         // Zentriert den Text "von Honey Sky"
             Console.ResetColor();
             Console.Write("\n\n\n\n\n");
+
             Console.ForegroundColor = colors[1];
             CenterText(pressAnyKey);                        // Zentriert den Text "(Drücken Sie eine beliebige Taste, um zu spielen)"
             Console.ResetColor();                           // Zurücksetzen der Textfarbe auf Standard
@@ -259,11 +277,15 @@ namespace EscapeRoom
 
                 if (hasKey && playerX == doorX && playerY == doorY)
                 {
-                    Console.Clear();
-                    Console.ForegroundColor = colors[1];
-                    Console.WriteLine(win);
                     WinSound();
-
+                    for (int i = 0; i < numberOfFlashes; i++)
+                    {
+                        Console.Clear();
+                        Thread.Sleep(flashDelay);
+                        Console.ForegroundColor = colors[1];
+                        Console.WriteLine(win);
+                        Thread.Sleep(flashDelay);
+                    }
                     Console.ReadKey();
                     Console.ResetColor();
                     Console.Clear();
@@ -404,21 +426,6 @@ namespace EscapeRoom
             Console.Beep(523, 125); // C
             Console.Beep(659, 125); // E
             Console.Beep(784, 125); // G
-
-            Console.Beep(392, 125); // G
-            Console.Beep(523, 125); // C
-
-            Console.Beep(349, 125); // F
-            Console.Beep(659, 125); // E
-            Console.Beep(587, 125); // D#
-
-            Console.Beep(523, 125); // C
-            Console.Beep(493, 125); // B
-            Console.Beep(466, 125); // Bb
-
-            Console.Beep(523, 125); // C
-            Console.Beep(784, 125); // G
-            Console.Beep(659, 125); // E
         }
     }
 }
