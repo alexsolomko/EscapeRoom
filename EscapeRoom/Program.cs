@@ -17,6 +17,12 @@ namespace EscapeRoom
             ConsoleColor.Gray
         };
 
+        //ANSI colors (16)
+        static string colorRed = "\u001b[31;1m";
+        static string colorYellow = "\u001b[33;1m";
+        static string colorGreen = "\u001b[32;1m";
+        static string colorReset = "\u001b[0m";
+
         const char wall = '#';         // Wand Teil
         const char player = 'P';       // Spieler
         const char key = 'K';          // Schlüssel
@@ -40,14 +46,7 @@ namespace EscapeRoom
         static string studioName = "von Honey Sky";
         static string pressAnyKey = "Drücke eine beliebige Taste, um das Spiel zu starten";
         static string welcome = "Willkommen!\n\n";
-
         static string leerFeld = "           ";
-        //ANSI colors (16)
-        static string colorRed = "\u001b[31;1m";
-        static string colorYellow = "\u001b[33;1m";
-        static string colorGreen = "\u001b[32;1m";
-        static string colorReset = "\u001b[0m";
-
         static string gameInstructions = $"{leerFeld}Du bist die Spielfigur ({colorYellow}{player}{colorReset})\n" +
                                          $"{leerFeld}Dein Ziel ist es, den Schlüssel ({colorRed}{key}{colorReset}) zu finden\n" +
                                          $"{leerFeld}und die Tür ({colorGreen}{door}{colorReset}) zu öffnen\n" +
