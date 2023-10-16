@@ -18,7 +18,7 @@ namespace EscapeRoom
         };
 
         const char wall = '#';         // Wand Teil
-        static char player = 'P';       // Spieler
+        const char player = 'P';       // Spieler
         const char key = 'K';          // Schlüssel
         const char door = 'D';         // Tür
         const char emptySpace = ' ';   // Leerfläche Teil
@@ -421,11 +421,6 @@ namespace EscapeRoom
 
             Console.Beep(392, 125); // G
             Console.Beep(523, 125); // C
-
-            Console.Beep(349, 125); // F
-            Console.Beep(523, 125); // C
-            Console.Beep(659, 125); // E
-            Console.Beep(784, 125); // G
         }
     }
 }
