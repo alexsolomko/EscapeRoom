@@ -21,19 +21,21 @@ namespace EscapeRoom
         //ANSI colors (16)
         static string colorRed = "\u001b[31;1m";
         static string colorYellow = "\u001b[33;1m";
-        static string colorGreen = "\u001b[32;1m";
         static string colorReset = "\u001b[0m";
 
+        #region MapChars
         const char wall = '█';         // Wand Teil
         const char player = 'P';       // Spieler
         const char key = 'K';          // Schlüssel
         static char door;         // Tür
-        const char doorHorizontal = '—';         // Tür
+        const char doorHorizontal = '-';         // Tür
         const char doorVertical = '|';         // Tür
         const char emptySpace = ' ';   // Leerfläche Teil
         const int sizeWidth = 70;      // Window/Buffer Width
-        const int sizeHeight = 20;     // Window/Buffer Height
+        const int sizeHeight = 20;     // Window/Buffer Height 
+        #endregion
 
+        #region Labels
         static string labelName = "Escape Room von Honey Sky"; // Titel des Konsolenfensters
         static string startLabel = @"
      ______                            _____                       
@@ -71,8 +73,12 @@ namespace EscapeRoom
                         \/  \/     |_| |_| |_| (_)
                                                   
                                                   
-";
+"; 
+        #endregion
 
+        //static int miniumSize = 10 //10, weil sonst die formatierung nicht gut funktioniert;
+        //static int maximumHeight;
+        //static int maximumWidth;
         static int roomWidth;
         static int roomHeight;
         static char[,] room;
@@ -132,7 +138,7 @@ namespace EscapeRoom
             Console.ForegroundColor = colors[1];
             CenterText(pressAnyKey);                        // Zentriert den Text "(Drücken Sie eine beliebige Taste, um zu spielen)"
             Console.ResetColor();                           // Zurücksetzen der Textfarbe auf Standard
-            Console.ReadKey();
+            Console.ReadKey(true);
             Console.Clear();
         }
         static void GameInstructions()
@@ -143,7 +149,7 @@ namespace EscapeRoom
             Console.WriteLine("\n\n");
             Console.ForegroundColor = colors[1];
             CenterText(pressAnyKey);
-            Console.ReadKey();
+            Console.ReadKey(true);
             Console.ResetColor();
             Console.Clear();
         }
@@ -289,14 +295,20 @@ namespace EscapeRoom
         static void PlayGame()
         {
             Console.Clear();
+            DisplayRoom();
 
             while (true)
             {
                 Console.SetCursorPosition(0, 0);
                 Console.CursorVisible = false;
 
-                DisplayRoom();
+                ConsoleKeyInfo keyInfo = Console.ReadKey();
 
+                HandleInput(keyInfo.Key);
+
+                DisplayRoom();
+                
+                //zu methode
                 if (hasKey && playerX == doorX && playerY == doorY)
                 {
                     WinSound();
@@ -308,15 +320,12 @@ namespace EscapeRoom
                         Console.WriteLine(win);
                         Thread.Sleep(flashDelay);
                     }
-                    Console.ReadKey();
+                    Console.ReadKey(true);
                     Console.ResetColor();
                     Console.Clear();
                     break;
                 }
 
-                ConsoleKeyInfo keyInfo = Console.ReadKey();
-
-                HandleInput(keyInfo.Key);
             }
         }
         static void DisplayRoom()
@@ -382,7 +391,6 @@ namespace EscapeRoom
             }
             Console.ResetColor();
         }
-
         static void HandleInput(ConsoleKey _key)
         {
             int newX = playerX;
@@ -439,14 +447,15 @@ namespace EscapeRoom
         {
             Console.Beep(659, 125); // E
             Console.Beep(659, 125); // E
-            Console.Beep(659, 125); // E
-
+            Thread.Sleep(125);
+            Console.Beep(659, 250); // E
             Console.Beep(523, 125); // C
             Console.Beep(659, 125); // E
+            Thread.Sleep(250);
+
             Console.Beep(784, 125); // G
-
+            Thread.Sleep(500);
             Console.Beep(392, 125); // G
-            Console.Beep(523, 125); // C
         }
         #endregion
     }
