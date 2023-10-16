@@ -24,10 +24,12 @@ namespace EscapeRoom
         static string colorGreen = "\u001b[32;1m";
         static string colorReset = "\u001b[0m";
 
-        const char wall = '#';         // Wand Teil
+        const char wall = '█';         // Wand Teil
         const char player = 'P';       // Spieler
         const char key = 'K';          // Schlüssel
-        const char door = 'D';         // Tür
+        static char door;         // Tür
+        const char doorHorizontal = '—';         // Tür
+        const char doorVertical = '|';         // Tür
         const char emptySpace = ' ';   // Leerfläche Teil
         const int sizeWidth = 70;      // Window/Buffer Width
         const int sizeHeight = 20;     // Window/Buffer Height
@@ -50,7 +52,7 @@ namespace EscapeRoom
         static string leerFeld = "           ";
         static string gameInstructions = $"{leerFeld}Du bist die Spielfigur ({colorYellow}{player}{colorReset})\n" +
                                          $"{leerFeld}Dein Ziel ist es, den Schlüssel ({colorRed}{key}{colorReset}) zu finden\n" +
-                                         $"{leerFeld}und die Tür ({colorGreen}{door}{colorReset}) zu öffnen\n" +
+                                         $"{leerFeld}und die Tür zu öffnen\n" +
                                          $"{leerFeld}Bewege dich mit den Pfeiltasten";
         static string sliderRegelAnfang = $"Verwende die Pfeiltasten, um die ";
         static string sliderRegelEnde = $" des Raums auszuwählen:";
@@ -81,6 +83,7 @@ namespace EscapeRoom
         static int doorX;
         static int doorY;
         static bool hasKey = false;
+
         static Random rand = new Random(); // Gott des Zufalls
 
         static int numberOfFlashes = 3;
@@ -263,18 +266,22 @@ namespace EscapeRoom
                 case 0: // Oben
                     doorX = rand.Next(1, roomWidth - 1);
                     doorY = 0;
+                    door = doorHorizontal;
                     break;
                 case 1: // Unten
                     doorX = rand.Next(1, roomWidth - 1);
                     doorY = roomHeight - 1;
+                    door = doorHorizontal;
                     break;
                 case 2: // Links
                     doorX = 0;
                     doorY = rand.Next(1, roomHeight - 1);
+                    door = doorVertical;
                     break;
                 case 3: // Rechts
                     doorX = roomWidth - 1;
                     doorY = rand.Next(1, roomHeight - 1);
+                    door = doorVertical;
                     break;
             }
             room[doorX, doorY] = door;
