@@ -7,6 +7,7 @@ namespace EscapeRoom
 {
     internal class Program
     {
+        #region Variablen
         static List<ConsoleColor> colors = new List<ConsoleColor>
         {
             ConsoleColor.Red,
@@ -84,7 +85,7 @@ namespace EscapeRoom
 
         static int numberOfFlashes = 3;
         static int flashDelay = 400;
-
+        #endregion
         static void Main(string[] args)
         {
             WindowProperties();         // Window/Buffer Eigenschaften
@@ -133,8 +134,10 @@ namespace EscapeRoom
             CenterText(welcome);
             Console.WriteLine(gameInstructions);
             Console.WriteLine("\n\n");
+            Console.ForegroundColor = colors[1];
             CenterText(pressAnyKey);
             Console.ReadKey();
+            Console.ResetColor();
             Console.Clear();
         }
         #region Slider
@@ -148,15 +151,22 @@ namespace EscapeRoom
             int optionVal = _minValue; // Anfangswert der Option
             int optionStep = 1; // Schrittweite der Option
 
+            Console.Clear();
+
             while (true)
             {
-                Console.Clear();
+                Console.SetCursorPosition(0, 0);
                 Console.WriteLine("\n\n\n\n\n");
-                CenterText(sliderRegelAnfang + $"{_label}" + sliderRegelEnde);          //$"Verwende die Pfeiltasten, um die {_label} des Raums auszuwählen:"
-                Console.WriteLine('\n');
+
+                CenterText($"{sliderRegelAnfang} {_label} {sliderRegelEnde}\n\n");    //$"Verwende die Pfeiltasten, um die {_label} des Raums auszuwählen:"
+
                 CenterText(RenderSettingSlider(optionVal, _minValue, _maxValue));        // Ruft die Methode auf, um den Schieberegler anzuzeigen
                 Console.WriteLine('\n');
+                Console.ForegroundColor= colors[3];
                 CenterText(enterKey);
+                Console.ResetColor();
+
+
                 ConsoleKeyInfo keyInfo = Console.ReadKey();
 
                 if (keyInfo.Key == ConsoleKey.LeftArrow && optionVal > _minValue)
@@ -267,9 +277,11 @@ namespace EscapeRoom
         }
         static void PlayGame()
         {
+            Console.Clear();
+
             while (true)
             {
-                Console.Clear();
+                Console.SetCursorPosition(0,0);
                 Console.CursorVisible = false;
 
                 DisplayRoom();
@@ -406,6 +418,7 @@ namespace EscapeRoom
             Console.Write(new string(' ', (Console.WindowWidth - _text.Length) / 2));
             Console.WriteLine(_text);
         }
+        #region Music
         static void KeySound() => Console.Beep(500, 500);
         static void WallTouchSound() => Console.Beep(1000, 300);
         static void WinSound()
@@ -421,5 +434,6 @@ namespace EscapeRoom
             Console.Beep(392, 125); // G
             Console.Beep(523, 125); // C
         }
+        #endregion
     }
 }
