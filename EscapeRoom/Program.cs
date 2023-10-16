@@ -85,6 +85,10 @@ namespace EscapeRoom
 
         static int numberOfFlashes = 3;
         static int flashDelay = 400;
+
+        static int startX;
+        static int startY;
+
         #endregion
         static void Main(string[] args)
         {
@@ -162,7 +166,7 @@ namespace EscapeRoom
 
                 CenterText(RenderSettingSlider(optionVal, _minValue, _maxValue));        // Ruft die Methode auf, um den Schieberegler anzuzeigen
                 Console.WriteLine('\n');
-                Console.ForegroundColor= colors[3];
+                Console.ForegroundColor = colors[3];
                 CenterText(enterKey);
                 Console.ResetColor();
 
@@ -281,7 +285,7 @@ namespace EscapeRoom
 
             while (true)
             {
-                Console.SetCursorPosition(0,0);
+                Console.SetCursorPosition(0, 0);
                 Console.CursorVisible = false;
 
                 DisplayRoom();
@@ -310,12 +314,14 @@ namespace EscapeRoom
         }
         static void DisplayRoom()
         {
+            startX = (Console.WindowWidth - roomWidth) / 2;
+            startY = (Console.WindowHeight - roomHeight) / 2;
+
             for (int y = 0; y < roomHeight; y++)
             {
+                Console.SetCursorPosition(startX, startY + y);
                 for (int x = 0; x < roomWidth; x++)
                 {
-                    Console.SetCursorPosition(x, y);
-
                     if (room[x, y] == wall)
                     {
                         if (!hasKey)
@@ -369,6 +375,7 @@ namespace EscapeRoom
             }
             Console.ResetColor();
         }
+
         static void HandleInput(ConsoleKey _key)
         {
             int newX = playerX;
