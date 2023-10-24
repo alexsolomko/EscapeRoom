@@ -180,7 +180,7 @@ namespace EscapeRoom
                 Console.ResetColor();
 
 
-                ConsoleKeyInfo keyInfo = Console.ReadKey();
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
                 if (keyInfo.Key == ConsoleKey.LeftArrow && optionVal > _minValue)
                 {
@@ -302,7 +302,7 @@ namespace EscapeRoom
                 Console.SetCursorPosition(0, 0);
                 Console.CursorVisible = false;
 
-                ConsoleKeyInfo keyInfo = Console.ReadKey();
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
                 HandleInput(keyInfo.Key);
 
