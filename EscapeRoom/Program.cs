@@ -8,6 +8,8 @@ namespace EscapeRoom
     internal class Program
     {
         #region Variablen
+
+        #region Colors
         static List<ConsoleColor> colors = new List<ConsoleColor>
         {
             ConsoleColor.Red,
@@ -22,8 +24,9 @@ namespace EscapeRoom
         static string colorRed = "\u001b[31;1m";
         static string colorYellow = "\u001b[33;1m";
         static string colorReset = "\u001b[0m";
+        #endregion
 
-        #region MapChars
+        #region Map Chars
         const char wall = '█';         // Wand Teil
         const char player = 'P';       // Spieler
         const char key = 'K';          // Schlüssel
@@ -31,8 +34,6 @@ namespace EscapeRoom
         const char doorHorizontal = '-';         // Tür
         const char doorVertical = '|';         // Tür
         const char emptySpace = ' ';   // Leerfläche Teil
-        const int sizeWidth = 70;      // Window/Buffer Width
-        const int sizeHeight = 20;     // Window/Buffer Height 
         #endregion
 
         #region Labels
@@ -73,12 +74,15 @@ namespace EscapeRoom
                         \/  \/     |_| |_| |_| (_)
                                                   
                                                   
-"; 
+";
         #endregion
 
-        //static int miniumSize = 10 //10, weil sonst die formatierung nicht gut funktioniert;
-        //static int maximumHeight;
-        //static int maximumWidth;
+        #region Room Property
+        const int sizeWidth = 70;               //  Window/Buffer Width
+        const int sizeHeight = 20;              //  Window/Buffer Height 
+        static int miniumSliderSize = 10;       //  10, weil sonst die formatierung nicht gut funktioniert;
+        static int maximumRoomHeight = 20;      //  Maximum Room Height bei Slider Property
+        static int maximumRoomWidth = 40;       //  Maximum Room Width bei Slider Property
         static int roomWidth;
         static int roomHeight;
         static char[,] room;
@@ -90,13 +94,14 @@ namespace EscapeRoom
         static int doorY;
         static bool hasKey = false;
 
-        static Random rand = new Random(); // Gott des Zufalls
+        static Random rand = new Random();      // Gott des Zufalls
 
         static int numberOfFlashes = 3;
         static int flashDelay = 400;
 
         static int startX;
         static int startY;
+        #endregion
 
         #endregion
         static void Main(string[] args)
@@ -108,6 +113,8 @@ namespace EscapeRoom
             InitializeRoom();           // Erzeugt Raum
             PlayGame();                 // Spiel Strart
         }
+
+        #region Window Methoden
         static void WindowProperties()
         {
             Console.WindowWidth = sizeWidth;
@@ -153,11 +160,13 @@ namespace EscapeRoom
             Console.ResetColor();
             Console.Clear();
         }
+        #endregion
+
         #region Slider
         static void GetRoomDimensions()
         {
-            roomWidth = GetSliderValue("Breite", 10, 40); // Ruft die Methode auf, um die Breite auszuwählen
-            roomHeight = GetSliderValue("Höhe", 10, 20); // Ruft die Methode auf, um die Höhe auszuwählen
+            roomWidth = GetSliderValue("Breite", miniumSliderSize, maximumRoomWidth); // Ruft die Methode auf, um die Breite auszuwählen
+            roomHeight = GetSliderValue("Höhe", miniumSliderSize, maximumRoomHeight); // Ruft die Methode auf, um die Höhe auszuwählen
         }
         static int GetSliderValue(string _label, int _minValue, int _maxValue)
         {
@@ -173,7 +182,7 @@ namespace EscapeRoom
 
                 CenterText($"{sliderRegelAnfang} {_label} {sliderRegelEnde}\n\n");    //$"Verwende die Pfeiltasten, um die {_label} des Raums auszuwählen:"
 
-                CenterText(RenderSettingSlider(optionVal, _minValue, _maxValue));        // Ruft die Methode auf, um den Schieberegler anzuzeigen
+                CenterText(RenderSettingSlider(optionVal, _minValue, _maxValue));           // Ruft die Methode auf, um den Schieberegler anzuzeigen
                 Console.WriteLine('\n');
                 Console.ForegroundColor = colors[3];
                 CenterText(enterKey);
@@ -231,6 +240,8 @@ namespace EscapeRoom
             return sliderStr;
         }
         #endregion Slider
+
+        #region Initializierung von Room, Tür, Player, Key
         static void InitializeRoom()
         {
             room = new char[roomWidth, roomHeight];
@@ -307,7 +318,7 @@ namespace EscapeRoom
                 HandleInput(keyInfo.Key);
 
                 DisplayRoom();
-                
+
                 //zu methode
                 if (hasKey && playerX == doorX && playerY == doorY)
                 {
@@ -328,6 +339,9 @@ namespace EscapeRoom
 
             }
         }
+        #endregion
+
+        #region Display Room, bzw. Draw Room
         static void DisplayRoom()
         {
             startX = (Console.WindowWidth - roomWidth) / 2;
@@ -391,6 +405,9 @@ namespace EscapeRoom
             }
             Console.ResetColor();
         }
+        #endregion
+
+        #region Schteuerung
         static void HandleInput(ConsoleKey _key)
         {
             int newX = playerX;
@@ -435,12 +452,17 @@ namespace EscapeRoom
             char destination = room[_x, _y];
             return destination != wall && (destination != door || hasKey);
         }
+        #endregion
+
+        #region Center Text
         static void CenterText(string _text)
         {
             Console.Write(new string(' ', (Console.WindowWidth - _text.Length) / 2));
             Console.WriteLine(_text);
         }
-        #region Music
+        #endregion
+
+        #region Game Music
         static void KeySound() => Console.Beep(500, 500);
         static void WallTouchSound() => Console.Beep(1000, 300);
         static void WinSound()
